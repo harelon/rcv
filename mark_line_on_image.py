@@ -5,7 +5,7 @@ from find_line_in_image import find_line_contour
 
 def mark_rectangle_contour():
     # return the points of the contour the looks most like rectangle
-    best_fitting_rectangle = find_line_contour(image)        
+    best_fitting_rectangle = find_line_contour(image)
 
     # draws the contour on the lower half of the image
     output = cv2.drawContours(
@@ -13,32 +13,33 @@ def mark_rectangle_contour():
         -1, (0, 0, 255), 4
     )
 
-    cv2.imshow("output", output)
     # show the marked best fitting rectangle if there is one
+    cv2.imshow("output", output)
 
 
 def args_parser():
     global image
+
+    # we need a parser
+    # to run the program from command line and select one of the photos we took
     parser = argparse.ArgumentParser(
             description='An image white line will be detected in'
             )
-    # we need a parser
-    # to run the program from command line and select one of the photos we took
 
+    # we need an image path argument to know on what to apply the program
     parser.add_argument(
             'image',
             help='the path of the image'
         )
-    # we need an image path argument to know on what to apply the program
 
-    args = parser.parse_args()
     # convert the arguments into something we can use
+    args = parser.parse_args()
 
-    image_path = args.image
     # reads the args image paramater into image_path
+    image_path = args.image
 
-    image = cv2.imread(image_path)
     # read the image from the path we are given
+    image = cv2.imread(image_path)
 
 
 def main():
