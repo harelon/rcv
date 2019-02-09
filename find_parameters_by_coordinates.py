@@ -3,16 +3,19 @@ import math
 
 
 def measure_distance(
-    y, x, picture_shape, camera_height, y_leaning_angle, x_turning_pixels
+    y, x, picture_shape, camera_height, y_leaning_angle, x_turning_pixels,
+    z_rotating_angle
 ):
-    height, width, _ = picture_shape
 
+    rotated_x = (x-320) * math.cos(math.radians(z_rotating_angle)) + (y - 240) * math.sin(math.radians(z_rotating_angle))
+    rotated_y = -(x-320) * math.sin(math.radians(z_rotating_angle)) + (y - 240) * math.cos(math.radians(z_rotating_angle))
+    height, width, _ = picture_shape
     y_center = height / 2
     # the center x for the calculations is not really the center pixel
     x_center = int(width / 2) - x_turning_pixels
 
-    dy = y - y_center
-    dx = abs(x - x_center)
+    dy = rotated_y
+    dx = abs(rotated_x)
 
     # every angle is the angle the camera is leaned to
     # and the angle calculated by the pixels

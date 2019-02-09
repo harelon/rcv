@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 import os
 import sys
+import imutils
 from find_parameters_by_coordinates import measure_distance
 
 
@@ -29,14 +30,14 @@ def draw_measure_box(x, y):
     # print the distance measured by the module
     print(
         measure_distance(
-            y, x, image_copy.shape, camera_height,
-            y_leaning_angle, x_turning_pixels
+            y, x, image_orig.shape, camera_height,
+            y_leaning_angle, x_turning_pixels, z_rotating_angle
             )
         )
 
 
 def mouse_callback(event, x, y, flags, param):
-    global image_orig, image_copy, image_cleared
+    global image_copy, image_cleared
     # if left was pressed and image is cleared draw a red dot
     if event == cv2.EVENT_LBUTTONDOWN and image_cleared:
         cv2.circle(image_copy, (x, y), 3, (0, 0, 255), 2)
@@ -59,10 +60,11 @@ def mouse_callback(event, x, y, flags, param):
 
 
 def do_work(img):
-    global image_orig, image_copy
+    global image_orig, image_orig, image_copy, original_shape
     print("img = {}".format(img))
-    image_orig = cv2.imread(img)
+    image_orig = cv2.imread(img)    
     image_copy = np.copy(image_orig)
+    print(image_copy.shape[0:2])
     cv2.namedWindow('Image')
     # when the mouse is clicked mouse_callback function will be called
     cv2.setMouseCallback('Image', mouse_callback)
@@ -86,6 +88,7 @@ def main():
     global camera_height
     global y_leaning_angle
     global x_turning_pixels
+    global z_rotating_angle
     # we need a parser for our program
     parser_description = "Performs distance calculation to the x,y where the \
         left mouse was clicked"
@@ -102,6 +105,11 @@ def main():
                          and a straight reference line\
                          when the picture was taken"
                         )
+    parser.add_argument('--z_rotating_angle', type=float, default=0,
+                        help="the difference in pixels between the center line\
+                         and a straight reference line\
+                         when the picture was taken"
+                        )
     # parse the arguments we were given
     args = parser.parse_args()
     if not os.path.isfile(args.image):
@@ -111,6 +119,7 @@ def main():
     camera_height = args.camera_height
     y_leaning_angle = args.y_leaning_angle
     x_turning_pixels = args.x_turning_pixels
+    z_rotating_angle = args.z_rotating_angle
     do_work(args.image)
 
 
