@@ -97,7 +97,7 @@ def main():
     parser.add_argument('--y_leaning_angle', type=float, default=28,
                         help="the y angle of camera when the picture was taken"
                         )
-    parser.add_argument('--x_turning_pixels', type=float, default=20,
+    parser.add_argument('--x_turning_pixels', type=float, default=-20,
                         help="the difference in pixels between the center line\
                          and a straight reference line\
                          when the picture was taken"
