@@ -1,7 +1,5 @@
 import socket
 import errno
-import logging
-
 
 def send_data():
     global connection_available
