@@ -1,24 +1,26 @@
 import socket
 import errno
+import json
+from time import sleep
 
 def send_data():
     global connection_available
-    data = b'hello world \n'
+    data ={
+        "p1": {"d": 50.9, "a": 23},
+        "p2": {"d": 60, "a": 27}
+    }
+    json_string = json.dumps(data)
     try:
-        client_socket.sendall(data)
+        client_socket.sendall(json_string)
     except socket.error as e:
         print(e)
         print(e.errno)
         client_socket.close()
-        if e == socket.timeout or e.errno == errno.WSAENOTSOCK:
-            connection_available = False
-            print("connection is unavailable retrying to connect")
-        elif e.errno == errno.WSAECONNRESET or e.errno == errno.WSAECONNABORTED:
-            print("connection was closed by host")
-            exit()
+        connection_available = False
+        if e == socket.timeout:            
+            print("connection is unavailable retrying to connect")        
         else:
             print(e.errno)
-
 
 def init_socket():
     global client_socket
@@ -47,13 +49,14 @@ def connect_and_send():
         connection_available = establish_connection()
     if connection_available:
         send_data()
+    sleep(1)
 
 
 def main():
     global ip
     global port
     global connection_available
-    ip = '192.168.4.7'
+    ip = '192.168.3.5'
     port = 8083
     connection_available = False
     while True:
