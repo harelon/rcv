@@ -2,25 +2,24 @@ import socket
 import errno
 import json
 from time import sleep
+from combine_modules import get_data, init
+
 
 def send_data():
     global connection_available
-    data ={
-        "p1": {"d": 50.9, "a": 23},
-        "p2": {"d": 60, "a": 27}
-    }
-    json_string = json.dumps(data)
+    data = get_data()
     try:
-        client_socket.sendall(json_string)
+        client_socket.sendall(data)
     except socket.error as e:
         print(e)
         print(e.errno)
         client_socket.close()
         connection_available = False
-        if e == socket.timeout:            
-            print("connection is unavailable retrying to connect")        
+        if e == socket.timeout:
+            print("connection is unavailable retrying to connect")
         else:
             print(e.errno)
+
 
 def init_socket():
     global client_socket
@@ -40,6 +39,7 @@ def establish_connection():
         return False
     else:
         print("connected succesfully")
+        init()
         return True
 
 
@@ -49,7 +49,6 @@ def connect_and_send():
         connection_available = establish_connection()
     if connection_available:
         send_data()
-    sleep(1)
 
 
 def main():
