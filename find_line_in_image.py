@@ -15,26 +15,26 @@ def find_line_contour(image):
     # save the contour that will be returned after the function is used
     # the best fitting rectangle
     cont = None
-    minDiffer = sys.maxsize
+    min_differ = sys.maxsize
     # every difference in the area of the minAreaRect
     # will be smaller then sys.maxsize
     # saves it also to decide which is the best fitting rectangle
     found_box = False
     for contour in contours:
         area = cv2.contourArea(contour)
-        if area <= 400 or area >= 5000:
+        if area <= 400 or area >= 30000:
             continue
         peri = cv2.arcLength(contour, True)
         approx = cv2.approxPolyDP(contour, 0.04 * peri, True)
-        if not (len(approx) <= 6 and len(approx) >= 4):
+        if not (4 <= len(approx) <= 6):
             continue
         rect = cv2.minAreaRect(contour)
         box = cv2.boxPoints(rect)
         box = np.int0(box)
-        if cv2.contourArea(box) / cv2.contourArea(contour) < minDiffer:
+        if cv2.contourArea(box) / cv2.contourArea(contour) < min_differ:
             cont = box
             found_box = True
-            minDiffer = cv2.contourArea(box) / cv2.contourArea(contour)
+            min_differ = cv2.contourArea(box) / cv2.contourArea(contour)
     # if we didn't find any box matching our criteria
     if not found_box:
         return None
@@ -49,8 +49,9 @@ def __clean_image(image):
         )
     thresh = cv2.threshold(gray, 190, 255, cv2.THRESH_BINARY)[1]
     kernel = np.ones((5, 5), np.uint8)
-    thresh_opened = cv2.morphologyEx(
-        thresh, cv2.MORPH_OPEN, kernel, iterations=2
+    thresh_opened = cv2.erode(
+        thresh, kernel, iterations=3
         )
     blurred = cv2.GaussianBlur(thresh_opened, (5, 5), 0)
+    cv2.imshow("blurred", blurred)
     return blurred

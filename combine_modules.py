@@ -1,5 +1,4 @@
 import cv2
-import numpy as np
 import json
 from find_line_in_image import find_line_contour
 from find_parameters_by_coordinates import measure_distance, measure_angle
@@ -8,7 +7,7 @@ from find_parameters_by_coordinates import measure_distance, measure_angle
 def init():
     global cap
     global points_dictionary
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(1)
     points_dictionary = {
         "found": False,
         "p1": {"d": 0, "a": 0},
@@ -19,6 +18,9 @@ def init():
 def get_data():
     ret, frame = cap.read()
     line_contour = find_line_contour(frame)
+    cv2.imshow("image", frame)
+    cv2.waitKey(1)
+    output = frame
     if line_contour is None:
         points_dictionary["found"] = False
         points_dictionary["p1"]["d"] = 0
@@ -42,4 +44,9 @@ def get_data():
             y, x, frame.shape, 38.5, 28, 20
             )
         points_dictionary["p1"]["a"] = measure_angle(x, frame.shape, 20)
-    return json.dumps(points_dictionary)
+        output = cv2.drawContours(
+            output, [line_contour],
+            -1, (0, 0, 255), 4
+        )
+    cv2.imshow("output", output)
+    return json.dumps(points_dictionary).encode('utf-8')
