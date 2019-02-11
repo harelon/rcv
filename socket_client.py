@@ -36,6 +36,7 @@ def establish_connection():
         exit()
     if err != 0:
         client_socket.close()
+        print("couldn't connect")
         return False
     else:
         print("connected succesfully")
