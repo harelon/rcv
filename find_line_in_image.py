@@ -53,5 +53,5 @@ def __clean_image(image):
         thresh, kernel, iterations=3
         )
     blurred = cv2.GaussianBlur(thresh_opened, (5, 5), 0)
-    cv2.imshow("blurred", blurred)
+    # cv2.imshow("blurred", blurred)
     return blurred

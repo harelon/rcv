@@ -10,6 +10,7 @@ def send_data():
     data = get_data()
     try:
         client_socket.sendall(data)
+        print("sending data")
     except socket.error as e:
         print(e)
         print(e.errno)
@@ -30,6 +31,7 @@ def init_socket():
 def establish_connection():
     init_socket()
     err = client_socket.connect_ex((ip, port))
+    print(err)
     if err == socket.error:
         print(str(err) + " connection error")
         print("connection timed out")
@@ -39,8 +41,7 @@ def establish_connection():
         print("couldn't connect")
         return False
     else:
-        print("connected succesfully")
-        init()
+        print("connected succesfully")        
         return True
 
 
@@ -59,6 +60,7 @@ def main():
     ip = '192.168.3.5'
     port = 8083
     connection_available = False
+    init()
     while True:
         connect_and_send()
 

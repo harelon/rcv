@@ -26,7 +26,7 @@ def measure_distance(
     # the center x for the calculations is not really the center pixel
     x_center = int(width / 2) - x_turning_pixels
 
-    dy = rotated_y
+    dy = -rotated_y
     dx = abs(rotated_x)
 
     # every angle is the angle the camera is leaned to
