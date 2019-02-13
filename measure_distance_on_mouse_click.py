@@ -87,9 +87,7 @@ def do_work(img):
 def main():
     global camera_height
     global y_leaning_angle
-    global x_turning_pixels
-    global z_rotating_angle
-    # we need a parser for our program
+    global x_turning_angle
     parser_description = "Performs distance calculation to the x,y where the \
         left mouse was clicked"
     parser = argparse.ArgumentParser(description=parser_description)
@@ -100,17 +98,12 @@ def main():
     parser.add_argument('--y_leaning_angle', type=float, default=28,
                         help="the y angle of camera when the picture was taken"
                         )
-    parser.add_argument('--x_turning_pixels', type=float, default=-20,
+    parser.add_argument('--x_turning_angle', type=float, default=1.9,
                         help="the difference in pixels between the center line\
                          and a straight reference line\
-                         when the picture was taken"
+                         when the picture was taken\
+                         positive angle is to the right"
                         )
-    parser.add_argument('--z_rotating_angle', type=float, default=0,
-                        help="the difference in pixels between the center line\
-                         and a straight reference line\
-                         when the picture was taken"
-                        )
-    # parse the arguments we were given
     args = parser.parse_args()
     if not os.path.isfile(args.image):
         print('Please provide a valid path to an image file')
@@ -118,8 +111,7 @@ def main():
     # use the arguments we were given
     camera_height = args.camera_height
     y_leaning_angle = args.y_leaning_angle
-    x_turning_pixels = args.x_turning_pixels
-    z_rotating_angle = args.z_rotating_angle
+    x_turning_angle = args.x_turning_angle
     do_work(args.image)
 
 
