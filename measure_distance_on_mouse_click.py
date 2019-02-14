@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 import os
 import sys
+from find_parameters_by_coordinates import find_distance_by_coordinates
 
 
 image_cleared = True
