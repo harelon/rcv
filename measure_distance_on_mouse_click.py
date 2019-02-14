@@ -3,8 +3,7 @@ import cv2
 import numpy as np
 import os
 import sys
-import imutils
-from find_parameters_by_coordinates import measure_distance
+from constants import X_PIXELS_PER_DEGREE, Y_PIXELS_PER_DEGREE
 
 
 image_cleared = True
