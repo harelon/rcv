@@ -1,18 +1,19 @@
 import argparse
 import cv2
-from find_line_in_image import find_line_contour
+from find_line import find_line_contour, clean_image
 
 
 def mark_rectangle_contour(image):
     # return the points of the contour the looks most like rectangle
-    best_fitting_rectangle = find_line_contour(image)
-
-    # draws the contour on the lower half of the image
-    output = cv2.drawContours(
-        image, best_fitting_rectangle,
-        -1, (0, 0, 255), 4
-    )
-
+    cleaned_image = clean_image(image)
+    best_fitting_rectangle = find_line_contour(cleaned_image)
+    output = image.copy()
+    if best_fitting_rectangle is not None:
+        # draws the contour on the lower half of the image
+        output = cv2.drawContours(
+            image, [best_fitting_rectangle],
+            -1, (0, 0, 255), 4
+        )
     # show the marked best fitting rectangle if there is one
     return output
 
