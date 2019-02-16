@@ -1,8 +1,8 @@
 import cv2
 import json
 import datetime
-from find_line_in_image import find_line_contour
-from find_parameters_by_coordinates import measure_distance, measure_angle
+from find_line import find_line_contour
+from find_parameters_by_coordinates import find_distance_and_angle_by_coordinates
 
 
 def init():
@@ -26,9 +26,6 @@ def get_data():
     global start_time
     ret, frame = cap.read()
     line_contour = find_line_contour(frame)
-    # cv2.imshow("image", frame)
-    # cv2.waitKey(1)
-    output = frame
     if line_contour is None:
         points_dictionary["found"] = False
         points_dictionary["p1"]["d"] = 0
@@ -37,27 +34,35 @@ def get_data():
         points_dictionary["p2"]["a"] = 0
     if line_contour is not None:
         points_dictionary["found"] = True
-        max_bottom_box_point = [0, 0]
-        second_max_bottom_box_point = [0, 0]
+        lowest_box_point = [0, 0]
+        second_lowest_bottom_box_point = [0, 0]
+        highest_box_point = [100000, 100000]
+        second_highest_box_point = [100000, 100000]
         for x, y in line_contour:
-            if y > second_max_bottom_box_point[1]:
-                if y >= max_bottom_box_point[1]:
-                    second_max_bottom_box_point = max_bottom_box_point
-                    max_bottom_box_point = (x, y)
+            if y > second_lowest_bottom_box_point[1]:
+                if y >= lowest_box_point[1]:
+                    second_lowest_bottom_box_point = lowest_box_point
+                    lowest_box_point = (x, y)
                 else:
-                    second_max_bottom_box_point =(x,y)
-        y = (max_bottom_box_point[1] + second_max_bottom_box_point[1]) / 2
-        x = (max_bottom_box_point[0] + second_max_bottom_box_point[0]) / 2
-        points_dictionary["p1"]["d"] = measure_distance(
-            y, x, frame.shape, 38.5, 28, 20
+                    second_lowest_bottom_box_point =(x, y)
+            if y < second_highest_box_point[1]:
+                if y < highest_box_point[1]:
+                    second_highest_box_point = highest_box_point
+                    highest_box_point = (x,y)
+                else:
+                    second_highest_box_point = (x,y)
+        y1 = (lowest_box_point[1] + second_lowest_bottom_box_point[1]) / 2
+        x1 = (lowest_box_point[0] + second_lowest_bottom_box_point[0]) / 2
+        d1, a1 = find_distance_and_angle_by_coordinates(
+            x1, y1, frame.shape, 38.5, 28, 20
             )
-        points_dictionary["p1"]["a"] = measure_angle(x, frame.shape, 20)
-        output = cv2.drawContours(
-            output, [line_contour],
-            -1, (0, 0, 255), 4
-        )
-    start_time = datetime.datetime.now()
-    print(str(start_time - last_time))
-    last_time = start_time
-    # cv2.imshow("output", output)
+        y2 = (highest_box_point[1] + second_highest_box_point[1]) / 2
+        x2 = (highest_box_point[0] + second_highest_box_point[0]) / 2
+        d2, a2 = find_distance_and_angle_by_coordinates(
+            x2, y2, frame.shape, 38.5, 28, 20
+            )
+        points_dictionary["p1"]["d"] = d1
+        points_dictionary["p1"]["a"] = a1
+        points_dictionary["p2"]["d"] = d2
+        points_dictionary["p2"]["a"] = a2
     return json.dumps(points_dictionary).encode('utf-8')
