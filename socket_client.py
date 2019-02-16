@@ -1,7 +1,6 @@
 import socket
 import errno
 import json
-from time import sleep
 from combine_modules import get_data, init
 
 
