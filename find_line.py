@@ -4,12 +4,11 @@ import sys
 import os
 import argparse
 
-
 def find_line_contour(image):
     # every ratio of circumscribing box to contour
     # will be smaller than this number
     min_ratio = sys.maxsize
-    # find the contours in the image
+    # find the contours in the image    
     _, contours, _ = cv2.findContours(
         image, cv2.RETR_EXTERNAL,
         cv2.CHAIN_APPROX_SIMPLE
@@ -58,7 +57,7 @@ def clean_image(image):
         )
     # blur the image to dull the image
     blurred = cv2.GaussianBlur(thresh_opened, (5, 5), 0)
-    cv2.imshow("blurred", blurred)
+    # cv2.imshow("blurred", blurred)
     return blurred
 
 
