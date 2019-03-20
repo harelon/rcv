@@ -29,7 +29,6 @@ class FrameHandler():
         self._camera_height=float(self._conf.get('rcv_server', 'camera_height'))
         self._y_leaning_angle=float(self._conf.get('rcv_server', 'y_leaning_angle'))
         self._x_turning_angle=float(self._conf.get('rcv_server', 'x_turning_angle'))
-        self._show = self._conf.getboolean('rcv_server', 'show')
         self._frame_threshold= int(self._conf.get('rcv_server', 'frame_threshold'))
         focus_image_path = self._conf.get('rcv_server', 'focus_image')
         if os.path.exists(focus_image_path) and os.path.isfile(focus_image_path):
@@ -74,10 +73,9 @@ class FrameHandler():
             output = cv2.circle(output, self._points[1], 3, (0, 255, 0), -1)
         self._output_frame = output
 
-    def show_images(self):
+    def get_sliders(self):
         self.prep_output_image()
-        cv2.imshow("output", self._output_frame)
-        cv2.waitKey(1)
+        return [('original', self._frame), ('cleaned', self._cleaned_frame), ('output', self._output_frame)]
 
     def extermum_points(self, contour):
         min_distance = sys.maxsize
@@ -180,8 +178,6 @@ class FrameHandler():
         self._line_contour = self.find_line_contour()
         if self._line_contour is not None:
             self._points = self.extermum_points(self._line_contour)
-        if self._show:
-            self.show_images()
         return self._points
 
     def find_distance_and_angle_by_coordinates(self, x, y, image_shape):
