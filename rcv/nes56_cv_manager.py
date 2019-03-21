@@ -5,6 +5,7 @@ import os
 import rcv_utils
 import socket
 import sys
+import time
 
 
 class Nes56CvManager():
@@ -24,6 +25,14 @@ class Nes56CvManager():
         self._roborio_port = int(self._conf.get('rcv_server', 'roborio_port'))
         self._socket_timeout = int(self._conf.get('rcv_server', 'socket_timeout'))
         self._show = self._conf.getboolean ('rcv_server', 'show')
+        self._debug_mode = self._conf.getboolean('rcv_server', 'debug')
+        if self._debug_mode:
+            localtime   = time.localtime()
+            timeString  = time.strftime("%d%H%M%S", localtime)
+            self._directory = '/home/pi/rcv/camera_logs/' + timeString
+            if not os.path.exists(self._directory):
+                    os.makedirs(self._directory)
+            self._counter = 0
         # Handling the dynamic load of the frame handler
         self._frame_handler_module = self._conf.get('rcv_server', 'frame_handler')
         self._frame_handlers_dir = self._conf.get('rcv_server', 'frame_handlers_dir')
@@ -98,10 +107,16 @@ class Nes56CvManager():
 
     def get_next_frame(self):
         ret, frame = self._cap.read()
+        if self._debug_mode:
+            cv2.imwrite(self._directory + os.sep + str(self._counter) + '.jpg', frame)
+            self._counter += 1
         return (ret, frame)
 
     def analyze_frame(self, frame):
-        return self._frame_handler.handle_frame(frame)
+        analysis = self._frame_handler.handle_frame(frame)
+        if self._debug_mode:
+            analysis['counter'] = self._counter
+        return analysis
 
     def stop(self):
         self._stop = True
