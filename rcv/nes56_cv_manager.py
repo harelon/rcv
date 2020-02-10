@@ -110,6 +110,12 @@ class Nes56CvManager():
     def analyze_frame(self, frame):
         return self._frame_handler.handle_frame(frame)
 
+    def show_sliders(self):
+        show_frames = self._frame_handler.get_sliders()
+        for name, slide in show_frames:
+            cv2.imshow(name, slide)
+            cv2.waitKey(1)
+
     def stop(self):
         self._stop = True
 
@@ -120,8 +126,14 @@ class Nes56CvManager():
                 self.connect_to_roborio()
             if ret == True and self._connected:
                 data = self.analyze_frame(frame)
+<<<<<<< HEAD
                 data['front'] = self._is_front
                 self.send_data_to_roborio(json.dumps(data).encode('utf-8'))
+=======
+                #self.send_data_to_roborio(data)
+                if self._show:
+                    self.show_sliders()
+>>>>>>> 3a6e7da943aa59265904f95a6023df0d093b172f
                 logging.info(data)
 
 
