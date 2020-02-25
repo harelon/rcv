@@ -240,15 +240,18 @@ if __name__ == "__main__":
     for config in switchedCameraConfigs:
         startSwitchedCamera(config)
     cap = CameraServer.getInstance().getVideo()
-    NetworkTables.initialize(server='10.56.36.2')
-
+    NetworkTables.initialize(server='10.56.35.2')
+    width = config.config['width']
+    src = CameraServer.getInstance().putVideo("VisionCamera",width,int(width*3/4))
+    
     sd = NetworkTables.getTable('SmartDashboard')
     # loop forever
-    frame = np.ones((160, 120, 3))
+    frame = np.ones((width, int(width*3/4), 3))
     while True:
         _, frame = cap.grabFrame(frame)
         frame = frame.astype('uint8')
-        data = detect_ball(frame)
+        data, ((x, y), radius) = detect_ball(frame,width)
+        src.putFrame(cv2.circle(frame, (x, y),radius, (0,0,255), 2))
         last_ang = sd.getNumber("VisionAngle", 0)
         last_dis = sd.getNumber("VisionDistance", 0)
         if data is None:

@@ -15,8 +15,8 @@ CAMERA_MATRIX = np.array([[676.89754647, 0.0, 321.02857627],
 DIST_COEFS = np.array([1.24045728e-01, -8.43313568e-01, -6.88290997e-04, 2.84287667e-03, 1.26710943e+00])
 
 # target values for inRange function
-MIN_HSV = (0, 0, 80)
-MAX_HSV = (179, 226, 142)
+MIN_HSV = (12, 209, 140)
+MAX_HSV = (62, 255, 255)
 
 
 FOCAL_LENGTH = 320  # mm
